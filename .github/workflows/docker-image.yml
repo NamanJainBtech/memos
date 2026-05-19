@@ -32,4 +32,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/NamanJainBtech/memos:latest
+          tags: ghcr.io/namanjainbtech/memos:latest

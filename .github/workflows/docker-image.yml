@@ -31,5 +31,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./scripts/Dockerfile
           push: true
           tags: ghcr.io/namanjainbtech/memos:latest

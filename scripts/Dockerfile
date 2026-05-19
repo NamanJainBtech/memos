@@ -6,8 +6,7 @@ RUN apk add --no-cache git ca-certificates
 
 # Copy go mod files and download dependencies (cached layer)
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod \
-    go mod download
+RUN go mod download
 
 # Copy source code (use .dockerignore to exclude unnecessary files)
 COPY . .
@@ -15,9 +14,7 @@ COPY . .
 # Please build frontend first, so that the static files are available.
 # Refer to `pnpm release` in package.json for the build command.
 ARG TARGETOS TARGETARCH VERSION=dev COMMIT=unknown
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
     go build \
       -trimpath \
       -ldflags="-s -w -X github.com/usememos/memos/internal/version.Version=${VERSION} -X github.com/usememos/memos/internal/version.Commit=${COMMIT} -extldflags '-static'" \
@@ -44,9 +41,6 @@ USER root
 
 # Set working directory to the writable volume
 WORKDIR /var/opt/memos
-
-# Data directory
-VOLUME /var/opt/memos
 
 ENV TZ="UTC" \
     MEMOS_PORT="5230"
